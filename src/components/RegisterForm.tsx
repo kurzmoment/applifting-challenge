@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import Userfront from "@userfront/core";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useMutation } from "@apollo/client";
 import { ADD_USER } from "../graphql/mutations";
-import client from "../apollo-client";
 
 Userfront.init(process.env.REACT_APP_USERFRONT_KEY as string);
 
@@ -29,7 +28,7 @@ function RegisterForm() {
     const notification = toast.loading("Signing in!");
 
     try {
-      const res = await Userfront.signup({
+      await Userfront.signup({
         method: "password",
         name: formData.name,
         email: formData.email,

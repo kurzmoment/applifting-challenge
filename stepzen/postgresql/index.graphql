@@ -178,7 +178,6 @@ These are some examples of mutations generated from the schema. Feel free to mod
 type Mutation {
   insertArticle(
     image: String!
-    created_at: DateTime!
     body: String!
     title: String!
     user_id: ID!

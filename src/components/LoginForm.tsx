@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Userfront from "@userfront/core";
 import { Link, Outlet } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -17,7 +17,7 @@ function LoginForm() {
     setValue,
     handleSubmit,
     // watch,
-    formState: { errors },
+    // formState: { errors },
   } = useForm<FormData>();
 
   const onSubmit = handleSubmit(async (formData) => {

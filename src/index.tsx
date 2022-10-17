@@ -4,6 +4,13 @@ import "./index.css";
 import App from "./App";
 import { ApolloProvider } from "@apollo/client";
 import client from "./apollo-client";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import CreateArticle from "./pages/CreateArticle";
+import Header from "./components/Header";
+import MyArticles from "./pages/MyArticles";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -11,7 +18,41 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <App />
+      <BrowserRouter>
+        <Toaster />
+        <Routes>
+          <Route
+            index
+            path="/"
+            element={
+              <div>
+                <Header />
+                <App />
+              </div>
+            }
+          />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route
+            path="create-article"
+            element={
+              <div>
+                <Header />
+                <CreateArticle />
+              </div>
+            }
+          />
+          <Route
+            path="my-articles"
+            element={
+              <div>
+                <Header />
+                <MyArticles />
+              </div>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
     </ApolloProvider>
   </React.StrictMode>
 );
