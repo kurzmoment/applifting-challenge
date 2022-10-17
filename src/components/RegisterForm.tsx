@@ -3,8 +3,11 @@ import { Link, Outlet } from "react-router-dom";
 import Userfront from "@userfront/core";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useMutation } from "@apollo/client";
+import { ADD_USER } from "../graphql/mutations";
+import client from "../apollo-client";
 
-Userfront.init("vbqr7z8n");
+Userfront.init(process.env.REACT_APP_USERFRONT_KEY as string);
 
 type FormData = {
   name: string;
@@ -15,11 +18,12 @@ type FormData = {
 function RegisterForm() {
   const {
     register,
-    setValue,
+    // setValue,
     handleSubmit,
     // watch,
-    formState: { errors },
+    // formState: { errors },
   } = useForm<FormData>();
+  const [addUser] = useMutation(ADD_USER);
 
   const onSubmit = handleSubmit(async (formData) => {
     const notification = toast.loading("Signing in!");
@@ -31,22 +35,34 @@ function RegisterForm() {
         email: formData.email,
         password: formData.password,
         redirect: "/",
-      }).catch((error) => {
-        console.log(error);
-        if (formData?.password.length < 8) {
-          toast.error(
-            "Password must be at least 16 characters OR at least 8 characters including a number and a letter ",
-            {
-              id: notification,
-            }
-          );
-        } else {
-          toast.error("Email already exists", {
-            id: notification,
+      })
+        .then(async () => {
+          const {
+            data: { insertUser: newUser },
+          } = await addUser({
+            variables: {
+              email: formData.email,
+              name: formData.name,
+            },
           });
-        }
-      });
-      console.log(res);
+          console.log("New user was created: ", newUser);
+        })
+        .catch((error) => {
+          console.log(error);
+          if (formData?.password.length < 8) {
+            toast.error(
+              "Password must be at least 16 characters OR at least 8 characters including a number and a letter ",
+              {
+                id: notification,
+              }
+            );
+          } else {
+            toast.error("Email already exists", {
+              id: notification,
+            });
+          }
+        });
+      localStorage.setItem("jwt", Userfront.tokens.idToken);
     } catch (error) {
       console.log(error);
     }

@@ -219,7 +219,8 @@ type Mutation {
       dml: DELETE
       configuration: "postgresql_config"
     )
-  insertUser(created_at: DateTime!, email: String!, name: String!): User
+  # created_at: DateTime!,
+  insertUser(email: String!, name: String!): User
     @dbquery(
       type: "postgresql"
       schema: "public"

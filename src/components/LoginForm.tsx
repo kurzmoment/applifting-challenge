@@ -4,7 +4,7 @@ import { Link, Outlet } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
-Userfront.init("vbqr7z8n");
+Userfront.init(process.env.REACT_APP_USERFRONT_KEY as string);
 
 type FormData = {
   email: string;

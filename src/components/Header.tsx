@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import Userfront from "@userfront/core";
-Userfront.init("vbqr7z8n");
+Userfront.init(process.env.REACT_APP_USERFRONT_KEY as string);
 
 function Header() {
   async function handleLogOut() {
@@ -11,8 +11,6 @@ function Header() {
     localStorage.setItem("jwt", "");
     window.location.reload();
   }
-  console.log(localStorage.getItem("jwt"));
-  console.log(Userfront.user.name);
   console.log(Userfront.tokens.idToken);
 
   return (
@@ -26,13 +24,14 @@ function Header() {
         </ul>
       </div>
       <div className="mr-5 lg:mr-72">
-        {!localStorage.getItem("jwt") && (
+        {/* (localStorage.getItem("jwt") === undefined ||
+          localStorage.getItem("jwt") === "") */}
+        {!Userfront.tokens.idToken && (
           <Link className="text-blue-400" to="/login">
             Log In
           </Link>
         )}
-        {localStorage.getItem("jwt") && (
-          // <button  onClick={() => handleLogOut}>Log Out</button>
+        {Userfront.tokens.idToken && (
           <button className="text-blue-400" onClick={handleLogOut}>
             Log Out
           </button>
