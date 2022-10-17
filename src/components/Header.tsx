@@ -15,6 +15,7 @@ function Header() {
   }
 
   return (
+    //TODO: SHOULD BE MORE RESPONSIVE
     <div className="flex items-center self-center top-0 text-center bg-white px-4 py-4 shadow-md sticky z-50 ">
       <div className="flex flex-1 ml-5 lg:ml-72 space-x-5">
         <img src="logo.svg" alt="logo" />

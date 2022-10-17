@@ -1,5 +1,6 @@
 import MDEditor from "@uiw/react-md-editor";
 import React from "react";
+import { Link } from "react-router-dom";
 
 type Props = {
   article: ArticleTypes;
@@ -17,10 +18,10 @@ function Article({ article }: Props) {
           />
         </div>
         <div>
-          <h3 className="text-xl sm:text-2xl font-semibold ml-5">
+          <h3 className="text-2xl sm:text-2xl font-semibold ml-5">
             {article.title}
           </h3>
-          <div className="ml-5 mt-3 text-gray-400 flex space-x-4">
+          <div className="ml-5 mt-3 text-gray-400 flex space-x-4 text-xs sm:text-sm">
             <p>{article.user.name}</p>
             <p>•</p>
             <p>{article.created_at}</p>
@@ -29,7 +30,12 @@ function Article({ article }: Props) {
             <MDEditor.Markdown source={article.body} />
           </div>
           <div className="ml-5 mt-3 flex space-x-4">
-            <p className="text-blue-500">Read whole article</p>
+            <Link
+              to={`/article-detail/${article.id}`}
+              className="text-blue-500"
+            >
+              Read whole article
+            </Link>
             <p>0 Comments</p>
           </div>
         </div>

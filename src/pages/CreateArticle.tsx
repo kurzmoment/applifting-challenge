@@ -96,7 +96,7 @@ function CreateArticle() {
   });
 
   return (
-    <form className="w-1/2 ml-72 mb-2" onSubmit={onSubmit}>
+    <form className="sm:w-1/2 sm:ml-72 sm:mr-0 mr-4 mb-8" onSubmit={onSubmit}>
       <div className="flex mt-5 ml-5 space-x-5 items-center self-center">
         <h1 className="text-3xl font-semibold">Create New Article</h1>
         <button className="bg-blue-500 text-white pl-3 pr-3 p-2 rounded-md">

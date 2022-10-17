@@ -23,3 +23,60 @@ export const GET_ARTICLES = gql`
     }
   }
 `;
+
+export const GET_ARTICLES_BY_USER_ID = gql`
+  query MyQuery($id: ID!) {
+    getArticleUsingUser_id(id: $id) {
+      body
+      created_at
+      id
+      image
+      title
+      user {
+        created_at
+        email
+        id
+        name
+      }
+      commentList {
+        article_id
+        created_at
+        id
+        text
+        voteList {
+          comment_id
+          created_at
+          id
+          upvote
+        }
+      }
+    }
+  }
+`;
+
+export const GET_ARTICLE_BY_ID = gql`
+  query MyQuery($id: ID!) {
+    getArticle(id: $id) {
+      body
+      created_at
+      id
+      image
+      title
+      user {
+        name
+        id
+      }
+      commentList {
+        created_at
+        id
+        text
+        voteList {
+          comment_id
+          created_at
+          id
+          upvote
+        }
+      }
+    }
+  }
+`;

@@ -11,6 +11,7 @@ import Register from "./pages/Register";
 import CreateArticle from "./pages/CreateArticle";
 import Header from "./components/Header";
 import MyArticles from "./pages/MyArticles";
+import ArticleDetail from "./pages/ArticleDetail";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -48,6 +49,15 @@ root.render(
               <div>
                 <Header />
                 <MyArticles />
+              </div>
+            }
+          />
+          <Route
+            path="/article-detail/:id"
+            element={
+              <div>
+                <Header />
+                <ArticleDetail />
               </div>
             }
           />

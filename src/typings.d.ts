@@ -12,4 +12,13 @@ type ArticleTypes = {
   image: string;
   body: string;
   user: User;
+  comments: [CommentType];
+};
+
+type CommentType = {
+  id: number;
+  created_at: string;
+  text: string;
+  article: ArticleTypes;
+  user: User;
 };
