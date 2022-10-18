@@ -13,10 +13,6 @@ function ArticleDetail() {
     },
   });
 
-  console.log(articleId);
-  console.log(data);
-  console.log(loading);
-  console.log(error);
   if (loading === true) {
     return (
       <div className="flex flex-1 text-3xl items-center justify-center m-8">

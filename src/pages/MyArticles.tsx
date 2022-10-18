@@ -4,6 +4,7 @@ import { GET_ARTICLES_BY_USER_ID, GET_USERS } from "../graphql/queries";
 import { Jelly } from "@uiball/loaders";
 import client from "../apollo-client";
 import Userfront from "@userfront/core";
+import { Link } from "react-router-dom";
 
 function MyArticles() {
   //TODO: THIS TAKES TO LONG TO LOAD
@@ -33,9 +34,7 @@ function MyArticles() {
       id: id,
     },
   });
-  console.log(error);
-  console.log(data);
-  console.log(id);
+
   if (loading) {
     return (
       <div className="flex flex-1 text-3xl items-center justify-center m-8">
@@ -85,12 +84,13 @@ function MyArticles() {
                 <td className="py-4 px-6">{0}</td>
                 <td className="py-4 px-6">
                   <div className="space-x-2 ">
-                    <a
-                      href="/"
+                    <Link
                       className="font-medium text-blue-600  hover:underline"
+                      to={`edit-article/${article.id}`}
                     >
                       Edit
-                    </a>
+                    </Link>
+
                     <a
                       href="/"
                       className="font-medium text-blue-600  hover:underline"
@@ -106,7 +106,15 @@ function MyArticles() {
       </div>
     );
   }
-  return <div>NO ARTICLES</div>;
+  if (!data) {
+    <h1>No articles yet!</h1>;
+  }
+
+  return (
+    <div className="flex flex-1 text-3xl items-center justify-center m-8">
+      <Jelly size={80} speed={0.9} color="black" />
+    </div>
+  );
 }
 
 export default MyArticles;

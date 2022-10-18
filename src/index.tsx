@@ -12,6 +12,7 @@ import CreateArticle from "./pages/CreateArticle";
 import Header from "./components/Header";
 import MyArticles from "./pages/MyArticles";
 import ArticleDetail from "./pages/ArticleDetail";
+import EditArticle from "./pages/EditArticle";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -58,6 +59,15 @@ root.render(
               <div>
                 <Header />
                 <ArticleDetail />
+              </div>
+            }
+          />
+          <Route
+            path="my-articles/edit-article/:id"
+            element={
+              <div>
+                <Header />
+                <EditArticle />
               </div>
             }
           />
