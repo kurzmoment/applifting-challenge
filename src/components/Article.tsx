@@ -1,12 +1,14 @@
 import MDEditor from "@uiw/react-md-editor";
 import React from "react";
 import { Link } from "react-router-dom";
+import moment from "moment";
 
 type Props = {
   article: ArticleTypes;
 };
 
 function Article({ article }: Props) {
+  console.log(article);
   return (
     <div className="mt-8 mb-8">
       <div className="flex sm:flex-row flex-col">
@@ -17,14 +19,14 @@ function Article({ article }: Props) {
             alt="cat"
           />
         </div>
-        <div>
+        <div className="flex-1">
           <h3 className="text-2xl sm:text-2xl font-semibold ml-5">
             {article.title}
           </h3>
           <div className="ml-5 mt-3 text-gray-400 flex space-x-4 text-xs sm:text-sm">
             <p>{article.user.name}</p>
             <p>•</p>
-            <p>{article.created_at}</p>
+            <p>{moment(article.created_at).format("MMMM Do YYYY")}</p>
           </div>
           <div className="ml-5 mt-3 w-4/5 lg:w-3/5">
             <MDEditor.Markdown source={article.body} />
@@ -36,7 +38,7 @@ function Article({ article }: Props) {
             >
               Read whole article
             </Link>
-            <p>0 Comments</p>
+            <p>{article.commentList.length} Comments</p>
           </div>
         </div>
       </div>

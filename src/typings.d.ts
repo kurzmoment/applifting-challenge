@@ -12,7 +12,7 @@ type ArticleTypes = {
   image: string;
   body: string;
   user: User;
-  comments: [CommentType];
+  commentList: [CommentType];
 };
 
 type CommentType = {
@@ -21,4 +21,11 @@ type CommentType = {
   text: string;
   article: ArticleTypes;
   user: User;
+  vote: [Vote];
+};
+
+type Vote = {
+  id: number;
+  created_at: string;
+  upvote: boolean;
 };

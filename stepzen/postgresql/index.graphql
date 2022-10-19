@@ -197,12 +197,7 @@ type Mutation {
       dml: DELETE
       configuration: "postgresql_config"
     )
-  insertComment(
-    created_at: DateTime!
-    user_id: ID!
-    text: String!
-    article_id: ID!
-  ): Comment
+  insertComment(user_id: ID!, text: String!, article_id: ID!): Comment
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -254,6 +249,16 @@ type Mutation {
       schema: "public"
       table: "vote"
       dml: DELETE
+      configuration: "postgresql_config"
+    )
+  editArticle(id: ID!, title: String, image: String, body: String): Article
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      # table: "article"
+      query: """
+      UPDATE "article" SET "title"=$2 "image"=$3 "body"=$4 WHERE "id"=$1
+      """
       configuration: "postgresql_config"
     )
 }

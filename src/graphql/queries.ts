@@ -20,6 +20,10 @@ export const GET_ARTICLES = gql`
       user {
         name
       }
+      commentList {
+        id
+        article_id
+      }
     }
   }
 `;
@@ -70,6 +74,11 @@ export const GET_ARTICLE_BY_ID = gql`
         created_at
         id
         text
+        user {
+          name
+          id
+          email
+        }
         voteList {
           comment_id
           created_at

@@ -81,7 +81,7 @@ function MyArticles() {
                   {article.body.slice(0, 30) + "..."}
                 </td>
                 <td className="py-4 px-6">{article.user.name}</td>
-                <td className="py-4 px-6">{0}</td>
+                <td className="py-4 px-6">{article.commentList.length}</td>
                 <td className="py-4 px-6">
                   <div className="space-x-2 ">
                     <Link
