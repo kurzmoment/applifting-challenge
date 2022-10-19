@@ -1,10 +1,12 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { Jelly } from "@uiball/loaders";
-import MDEditor from "@uiw/react-md-editor";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation } from "react-router-dom";
-import { GET_ARTICLE_BY_ID } from "../graphql/queries";
+import client from "../apollo-client";
+import { EDIT_ARTICLE } from "../graphql/mutations";
+import { GET_ARTICLE_BY_ID, GET_USERS } from "../graphql/queries";
+import Userfront from "@userfront/core";
 
 type FormData = {
   title: string;
@@ -19,6 +21,7 @@ function EditArticle() {
       id: articleId,
     },
   });
+  const [editArticle] = useMutation(EDIT_ARTICLE);
 
   const {
     register,
@@ -27,7 +30,7 @@ function EditArticle() {
     // watch,
     // formState: { errors },
   } = useForm<FormData>();
-  const imageInputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
+  // const imageInputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
   //   function handleDeleteButton(e: Event) {
   //     e.preventDefault();
@@ -40,8 +43,39 @@ function EditArticle() {
 
   const onSubmit = handleSubmit(async (formData) => {
     console.log(formData);
+    const {
+      data: { getUserList },
+    } = await client.query({
+      query: GET_USERS,
+    });
+    var user_id: number = 0;
+    getUserList.map((u: User) => {
+      if (u.email === Userfront.user.email) {
+        user_id = u.id;
+      }
+      return user_id;
+    });
+
+    console.log(user_id);
+    console.log(formData.title);
+    console.log(formData.content);
+    console.log(articleId);
+    if (!formData.image === true) {
+      console.log("JDE TO SEM");
+      const {
+        data: { editArticle: newArticle },
+      } = await editArticle({
+        variables: {
+          id: articleId,
+          title: formData.title,
+          image: data.getArticle.image,
+          body: formData.content,
+          user_id: user_id,
+        },
+      });
+      console.log(newArticle);
+    }
   });
-  console.log(error);
 
   if (loading) {
     return (
@@ -112,11 +146,9 @@ function EditArticle() {
             {...register("content", { required: true })}
             rows={8}
             className="border border-gray-400 rounded-md outline-none p-1 pl-2 "
-            name=""
             id="content"
-          >
-            {data.getArticle.body}
-          </textarea>
+            defaultValue={data.getArticle.body}
+          ></textarea>
           {/* <MDEditor
             value={(value = data.getArticle.body)}
             onChange={(val) => setValue(val!)}

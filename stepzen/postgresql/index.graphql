@@ -51,7 +51,7 @@ type Vote {
   comment_id: ID
   created_at: DateTime
   id: ID!
-  upvote: Boolean
+  upvote: Int
   user: User
     @materializer(
       query: "getUser"
@@ -230,17 +230,21 @@ type Mutation {
       dml: DELETE
       configuration: "postgresql_config"
     )
-  insertVote(
-    created_at: DateTime!
-    upvote: Boolean!
-    user_id: ID!
-    comment_id: ID!
-  ): Vote
+  insertVote(upvote: Int!, user_id: ID!, comment_id: ID!): Vote
     @dbquery(
       type: "postgresql"
       schema: "public"
       table: "vote"
       dml: INSERT
+      configuration: "postgresql_config"
+    )
+  editVote(upvote: Int!, user_id: ID!, comment_id: ID!): Vote
+    @dbquery(
+      type: "postgresql"
+      schema: "public"
+      query: """
+      update vote set "upvote"=+$1 where "user_id"=$2 and "comment_id"=$3
+      """
       configuration: "postgresql_config"
     )
   deleteVote(id: ID!): Vote
@@ -251,13 +255,19 @@ type Mutation {
       dml: DELETE
       configuration: "postgresql_config"
     )
-  editArticle(id: ID!, title: String, image: String, body: String): Article
+  editArticle(
+    title: String!
+    image: String!
+    body: String!
+    id: ID!
+    user_id: ID!
+  ): Article
     @dbquery(
       type: "postgresql"
       schema: "public"
       # table: "article"
       query: """
-      UPDATE "article" SET "title"=$2 "image"=$3 "body"=$4 WHERE "id"=$1
+      UPDATE article SET "title"=$1, "image"=$2, "body"=$3 WHERE "id"=$4 and "user_id"=$5
       """
       configuration: "postgresql_config"
     )

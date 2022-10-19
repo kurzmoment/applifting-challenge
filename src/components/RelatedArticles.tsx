@@ -25,7 +25,7 @@ function RelatedArticles() {
               >
                 {article.title}
               </Link>
-              <p className="text-sm">{article.body}</p>
+              <p className="text-sm">{article.body.slice(0, 200) + "..."}</p>
             </div>
           ))}
         </div>

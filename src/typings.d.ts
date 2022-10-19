@@ -21,11 +21,11 @@ type CommentType = {
   text: string;
   article: ArticleTypes;
   user: User;
-  vote: [Vote];
+  voteList: [Vote];
 };
 
 type Vote = {
   id: number;
   created_at: string;
-  upvote: boolean;
+  upvote: number;
 };

@@ -8,7 +8,7 @@ type Props = {
 };
 
 function Article({ article }: Props) {
-  console.log(article);
+  document.documentElement.setAttribute("data-color-mode", "light");
   return (
     <div className="mt-8 mb-8">
       <div className="flex sm:flex-row flex-col">
@@ -29,7 +29,10 @@ function Article({ article }: Props) {
             <p>{moment(article.created_at).format("MMMM Do YYYY")}</p>
           </div>
           <div className="ml-5 mt-3 w-4/5 lg:w-3/5">
-            <MDEditor.Markdown source={article.body} />
+            <MDEditor.Markdown
+              source={article.body.slice(0, 450) + "More in detail ..."}
+              data-color-mode
+            />
           </div>
           <div className="ml-5 mt-3 flex space-x-4">
             <Link

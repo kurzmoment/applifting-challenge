@@ -23,6 +23,11 @@ export const GET_ARTICLES = gql`
       commentList {
         id
         article_id
+        voteList {
+          user_id
+          upvote
+          comment_id
+        }
       }
     }
   }

@@ -1,7 +1,7 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { GET_ARTICLE_BY_ID } from "../graphql/queries";
+import { GET_ARTICLE_BY_ID, GET_USERS } from "../graphql/queries";
 import { Jelly } from "@uiball/loaders";
 import MDEditor from "@uiw/react-md-editor";
 import RelatedArticles from "../components/RelatedArticles";
@@ -10,26 +10,54 @@ import Avatar from "../components/Avatar";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import TimeAgo from "react-timeago";
 import moment from "moment";
+import { EDIT_VOTE, INSERT_VOTE } from "../graphql/mutations";
+import Userfront from "@userfront/core";
+import client from "../apollo-client";
 
 function ArticleDetail() {
   document.documentElement.setAttribute("data-color-mode", "light");
-  const [vote, setVote] = useState<[boolean, number]>();
+  const [vote, setVote] = useState<[number, number]>();
   const articleId = useLocation().pathname.slice(16);
   const { data, loading, error } = useQuery(GET_ARTICLE_BY_ID, {
     variables: {
       id: articleId,
     },
   });
+  console.log(data);
+  const [insertVote] = useMutation(INSERT_VOTE);
+  const [editVote] = useMutation(EDIT_VOTE);
 
-  function handleVote(
+  async function handleVote(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    voteState: boolean,
+    voteState: number,
     id: number
   ) {
     // e.preventDefault();
     setVote([voteState, id]);
-    console.log(vote);
-    setVote([false, 0]);
+    console.log(typeof vote?.[0]);
+    const {
+      data: { getUserList },
+    } = await client.query({
+      query: GET_USERS,
+    });
+    var user_id: number = 0;
+    getUserList.map((u: User) => {
+      if (u.email === Userfront.user.email) {
+        user_id = u.id;
+      }
+      return user_id;
+    });
+    // TODO: DODELAT VOTE SYSTEM
+    const {
+      data: { insertVote: newVote },
+    } = await insertVote({
+      variables: {
+        comment_id: vote?.[1],
+        upvote: vote?.[0],
+        user_id: user_id,
+      },
+    });
+    console.log(newVote);
   }
 
   if (loading === true) {
@@ -79,15 +107,20 @@ function ArticleDetail() {
                     <p>{comment.text}</p>
                   </div>
                   <div className="mt-2 flex space-x-2 items-center">
-                    {/* <p>{comment.vote.length}</p> */}
-                    <p>+4</p>
+                    <p className="font-semibold">
+                      {/* @ts-ignore */}
+                      {comment.voteList.length !== 0
+                        ? comment.voteList[0]?.upvote
+                        : 0}
+                    </p>
+                    {/* <p>+4</p> */}
                     <hr className="border border-gray-200 h-5" />
 
-                    <button onClick={(e) => handleVote(e, true, comment.id)}>
+                    <button onClick={(e) => handleVote(e, 1, comment.id)}>
                       <ChevronUpIcon width={20} height={20} color="black" />
                     </button>
                     <hr className="border border-gray-200 h-5" />
-                    <button onClick={(e) => handleVote(e, false, comment.id)}>
+                    <button onClick={(e) => handleVote(e, -1, comment.id)}>
                       <ChevronDownIcon width={20} height={20} color="black" />
                     </button>
                     <hr className="border border-gray-200 h-5" />
