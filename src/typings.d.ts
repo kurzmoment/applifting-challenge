@@ -28,4 +28,6 @@ type Vote = {
   id: number;
   created_at: string;
   upvote: number;
+  comment_id: number;
+  user: User;
 };

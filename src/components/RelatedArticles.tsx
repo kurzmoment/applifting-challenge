@@ -7,8 +7,6 @@ function RelatedArticles() {
   // TODO: MAX 4 CLANKY
   const { data, loading } = useQuery(GET_ARTICLES, {});
 
-  console.log(data);
-
   if (loading) {
     <div></div>;
   }

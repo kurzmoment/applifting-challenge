@@ -90,3 +90,13 @@ export const EDIT_ARTICLE = gql`
     }
   }
 `;
+
+export const DELETE_VOTE = gql`
+  mutation MyQuery($id: ID!) {
+    deleteVote(id: $id) {
+      comment_id
+      upvote
+      user_id
+    }
+  }
+`;
