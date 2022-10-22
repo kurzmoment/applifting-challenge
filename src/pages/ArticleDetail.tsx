@@ -12,7 +12,7 @@ import CommentSection from "../components/CommentSection";
 function ArticleDetail() {
   document.documentElement.setAttribute("data-color-mode", "light");
   const articleId = useLocation().pathname.slice(16);
-  const { data, loading, error } = useQuery(GET_ARTICLE_BY_ID, {
+  const { data, loading } = useQuery(GET_ARTICLE_BY_ID, {
     variables: {
       id: articleId,
     },
@@ -36,7 +36,14 @@ function ArticleDetail() {
             <p>{moment(data.getArticle.created_at).format("MMMM Do YYYY")}</p>
           </div>
           <div className="mt-8 sm:mr-10">
-            <img src={data.getArticle.image} alt={data.getArticle.title} />
+            <img
+              src={
+                data.getArticle.image === ""
+                  ? "https://www.crystalair.ie/wp-content/plugins/post-grid/assets/frontend/images/placeholder.png"
+                  : data.getArticle.image
+              }
+              alt={data.getArticle.title}
+            />
           </div>
           <div className="sm:mr-10 mt-8">
             <MDEditor.Markdown source={data.getArticle.body} data-color-mode />

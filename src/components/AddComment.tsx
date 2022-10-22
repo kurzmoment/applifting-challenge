@@ -3,10 +3,9 @@ import { useForm } from "react-hook-form";
 import Avatar from "./Avatar";
 import Userfront from "@userfront/core";
 import { useLocation } from "react-router-dom";
-import client from "../apollo-client";
-import { GET_USERS } from "../graphql/queries";
 import { INSERT_COMMENT } from "../graphql/mutations";
 import { useMutation } from "@apollo/client";
+import { getUserId } from "../helpers/getUserId";
 
 type FormData = {
   content: string;
@@ -15,32 +14,13 @@ type FormData = {
 };
 
 function AddComment() {
-  const {
-    register,
-    setValue,
-    handleSubmit,
-    watch,
-    // formState: { errors },
-  } = useForm<FormData>();
+  const { register, setValue, handleSubmit, watch } = useForm<FormData>();
   const articleId = useLocation().pathname.slice(16);
   const [insertComment] = useMutation(INSERT_COMMENT);
 
   const onSubmit = handleSubmit(async (formData) => {
     formData.article_id = Number(articleId);
-
-    //   TODO: Z TOHOHOLE EXPORT FUNCTION
-    const {
-      data: { getUserList },
-    } = await client.query({
-      query: GET_USERS,
-    });
-    var user_id: number = 0;
-    getUserList.map((u: User) => {
-      if (u.email === Userfront.user.email) {
-        user_id = u.id;
-      }
-      return user_id;
-    });
+    const user_id = await getUserId(Userfront.user.email);
     formData.user_id = user_id;
 
     const {

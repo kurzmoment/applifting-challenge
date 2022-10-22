@@ -2,7 +2,6 @@ import React from "react";
 import Article from "./Article";
 import { useQuery } from "@apollo/client";
 import { GET_ARTICLES } from "../graphql/queries";
-
 import { Jelly } from "@uiball/loaders";
 
 function ArticleList() {

@@ -1,12 +1,12 @@
 import { useMutation } from "@apollo/client";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ReactTimeago from "react-timeago";
 import { DELETE_VOTE, EDIT_VOTE, INSERT_VOTE } from "../graphql/mutations";
-import { GET_ARTICLE_BY_ID, GET_USERS } from "../graphql/queries";
+import { GET_ARTICLE_BY_ID } from "../graphql/queries";
 import Userfront from "@userfront/core";
 import Avatar from "./Avatar";
-import client from "../apollo-client";
+import { getUserId } from "../helpers/getUserId";
 
 type Props = {
   comment: CommentType;
@@ -15,7 +15,6 @@ type Props = {
 
 function CommentSection({ comment, data }: Props) {
   const [vote, setVote] = useState<[number, number]>();
-  const [count, setCount] = useState<number>();
 
   const [insertVote] = useMutation(INSERT_VOTE, {
     refetchQueries: [GET_ARTICLE_BY_ID, "getArticle"],
@@ -28,13 +27,13 @@ function CommentSection({ comment, data }: Props) {
     refetchQueries: [GET_ARTICLE_BY_ID, "getArticle"],
   });
 
-  // TODO: UPRAVIT SCITANI
   function displayVotes(comment: CommentType) {
     const votes: Vote[] = comment?.voteList;
     const displayNumber = votes?.reduce(
-      (total, vote) => (vote.upvote ? (total += 1) : (total -= 1)),
+      (total, vote) => (vote.upvote === 1 ? (total += 1) : (total -= 1)),
       0
     );
+
     if (votes.length === 0) return 0;
     if (displayNumber === 0) {
       return votes[0]?.upvote ? 1 : -1;
@@ -48,18 +47,19 @@ function CommentSection({ comment, data }: Props) {
     }
 
     setVote([isUpvote, comment_id]);
-    const {
-      data: { getUserList },
-    } = await client.query({
-      query: GET_USERS,
-    });
-    var user_id: number = 0;
-    getUserList.map((u: User) => {
-      if (u.email === Userfront.user.email) {
-        user_id = u.id;
-      }
-      return user_id;
-    });
+    const user_id = await getUserId(Userfront.user.email);
+    // const {
+    //   data: { getUserList },
+    // } = await client.query({
+    //   query: GET_USERS,
+    // });
+    // var user_id: number = 0;
+    // getUserList.map((u: User) => {
+    //   if (u.email === Userfront.user.email) {
+    //     user_id = u.id;
+    //   }
+    //   return user_id;
+    // });
 
     data.getArticle.commentList.map(async (comment: CommentType) => {
       if (comment.id === comment_id) {

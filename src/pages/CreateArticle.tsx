@@ -3,11 +3,11 @@ import MDEditor from "@uiw/react-md-editor";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { ADD_ARTICLE } from "../graphql/mutations";
-import client from "../apollo-client";
-import { GET_USERS } from "../graphql/queries";
 import Userfront from "@userfront/core";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { getUserId } from "../helpers/getUserId";
+import { getImagePath } from "../helpers/getImagePath";
 
 type FormData = {
   title: string;
@@ -17,13 +17,7 @@ type FormData = {
 
 function CreateArticle() {
   const navigate = useNavigate();
-  const {
-    register,
-    // setValue,
-    handleSubmit,
-    // watch,
-    // formState: { errors },
-  } = useForm<FormData>();
+  const { register, handleSubmit } = useForm<FormData>();
   const [value, setValue] = React.useState("");
   const [addArticle] = useMutation(ADD_ARTICLE);
   const imageInputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
@@ -36,42 +30,8 @@ function CreateArticle() {
           id: notification,
         });
       } else {
-        const {
-          data: { getUserList },
-        } = await client.query({
-          query: GET_USERS,
-        });
-        var user_id: number = 0;
-        console.log(getUserList);
-        getUserList.map((u: User) => {
-          if (u.email === Userfront.user.email) {
-            user_id = u.id;
-          }
-          return user_id;
-        });
-        console.log(user_id);
-
-        const enteredImage = imageInputRef.current;
-
-        const data = new FormData();
-        //@ts-ignore
-        for (var file of enteredImage.files) {
-          data.append("file", file);
-        }
-
-        data.append("upload_preset", "applifting");
-
-        const imageData = await fetch(
-          "https://api.cloudinary.com/v1_1/di8ushvnv/image/upload",
-          {
-            method: "POST",
-            body: data,
-          }
-        ).then((r) => r.json());
-
-        const newImageURL = imageData.secure_url;
-        console.log(newImageURL);
-
+        const user_id = await getUserId(Userfront.user.email);
+        const newImageURL = await getImagePath(imageInputRef.current);
         formData.content = value;
         formData.image = newImageURL;
         const {

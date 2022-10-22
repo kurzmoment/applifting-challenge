@@ -12,13 +12,7 @@ type FormData = {
 };
 
 function LoginForm() {
-  const {
-    register,
-    setValue,
-    handleSubmit,
-    // watch,
-    // formState: { errors },
-  } = useForm<FormData>();
+  const { register, handleSubmit } = useForm<FormData>();
 
   const onSubmit = handleSubmit(async (formData) => {
     console.log(formData);
@@ -36,17 +30,16 @@ function LoginForm() {
           id: notification,
         });
       });
-      setValue("email", "");
-      setValue("password", "");
-      localStorage.setItem("jwt", Userfront.tokens.idToken);
+      // setValue("email", "");
+      // setValue("password", "");
+      // localStorage.setItem("jwt", Userfront.tokens.idToken);
       console.log(res);
     } catch (error) {
-      setValue("email", formData.email);
-      setValue("password", formData.password);
+      // setValue("email", formData.email);
+      // setValue("password", formData.password);
       console.log(error);
     }
   });
-  //   Userfront.redirectIfLoggedIn({ redirect: "/" });
 
   return (
     <div className="shadow-2xl m-auto w-72 sm:w-96 p-10 flex flex-col rounded-lg mt-10">

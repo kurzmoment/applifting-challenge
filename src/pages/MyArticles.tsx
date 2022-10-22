@@ -1,35 +1,22 @@
 import { useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
-import { GET_ARTICLES_BY_USER_ID, GET_USERS } from "../graphql/queries";
+import { GET_ARTICLES_BY_USER_ID } from "../graphql/queries";
 import { Jelly } from "@uiball/loaders";
-import client from "../apollo-client";
 import Userfront from "@userfront/core";
 import { Link } from "react-router-dom";
+import { getUserId } from "../helpers/getUserId";
 
 function MyArticles() {
-  //TODO: THIS TAKES TO LONG TO LOAD
   const [id, setId] = useState<number>();
   useEffect(() => {
-    async function getUserId() {
-      const {
-        data: { getUserList },
-      } = await client.query({
-        query: GET_USERS,
-      });
-      var user_id: number = 0;
-      getUserList.map((u: User) => {
-        if (u.email === Userfront.user.email) {
-          user_id = u.id;
-        }
-        return user_id;
-      });
-
+    async function userId() {
+      const user_id = await getUserId(Userfront.user.email);
       setId(user_id);
     }
-    getUserId();
+    userId();
   }, []);
 
-  const { data, loading, error } = useQuery(GET_ARTICLES_BY_USER_ID, {
+  const { data, loading } = useQuery(GET_ARTICLES_BY_USER_ID, {
     variables: {
       id: id,
     },

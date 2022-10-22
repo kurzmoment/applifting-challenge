@@ -15,8 +15,12 @@ function Article({ article }: Props) {
         <div className="lg:ml-72">
           <img
             className="sm:h-[244px] sm:w-[390px] h-[250px] m-auto rounded-sm lg:p-0 p-4"
-            src={article.image}
-            alt="cat"
+            src={
+              article.image === ""
+                ? "https://www.crystalair.ie/wp-content/plugins/post-grid/assets/frontend/images/placeholder.png"
+                : article.image
+            }
+            alt={article.title}
           />
         </div>
         <div className="flex-1">

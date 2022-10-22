@@ -1,12 +1,14 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { Jelly } from "@uiball/loaders";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation } from "react-router-dom";
-import client from "../apollo-client";
+import { useLocation, useNavigate } from "react-router-dom";
 import { EDIT_ARTICLE } from "../graphql/mutations";
-import { GET_ARTICLE_BY_ID, GET_USERS } from "../graphql/queries";
+import { GET_ARTICLE_BY_ID } from "../graphql/queries";
 import Userfront from "@userfront/core";
+import { getImagePath } from "../helpers/getImagePath";
+import { getUserId } from "../helpers/getUserId";
+import toast from "react-hot-toast";
 
 type FormData = {
   title: string;
@@ -15,65 +17,79 @@ type FormData = {
 };
 
 function EditArticle() {
+  const navigate = useNavigate();
+  const [imageState, setImageState] = useState<boolean>();
   const articleId = useLocation().pathname.slice(26);
-  const { data, loading, error } = useQuery(GET_ARTICLE_BY_ID, {
+  const { data, loading } = useQuery(GET_ARTICLE_BY_ID, {
     variables: {
       id: articleId,
     },
   });
   const [editArticle] = useMutation(EDIT_ARTICLE);
 
-  const {
-    register,
-    // setValue,
-    handleSubmit,
-    // watch,
-    // formState: { errors },
-  } = useForm<FormData>();
-  // const imageInputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
+  const { register, handleSubmit } = useForm<FormData>();
+  const imageInputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
-  //   function handleDeleteButton(e: Event) {
-  //     e.preventDefault();
-  //     setDeleteImage(true);
-  //   }
-  //   function handleUploadNewButton(e: Event) {
-  //     e.preventDefault();
-  //     setImageState(true);
-  //   }
-
+  function handleButton(state: boolean) {
+    setImageState(state);
+  }
   const onSubmit = handleSubmit(async (formData) => {
-    console.log(formData);
-    const {
-      data: { getUserList },
-    } = await client.query({
-      query: GET_USERS,
-    });
-    var user_id: number = 0;
-    getUserList.map((u: User) => {
-      if (u.email === Userfront.user.email) {
-        user_id = u.id;
-      }
-      return user_id;
-    });
-
-    console.log(user_id);
-    console.log(formData.title);
-    console.log(formData.content);
-    console.log(articleId);
-    if (!formData.image === true) {
-      console.log("JDE TO SEM");
+    const notification = toast.loading("Editing Article...");
+    const user_id = await getUserId(Userfront.user.email);
+    if (imageState === true) {
+      const imageURL = await getImagePath(imageInputRef.current);
       const {
         data: { editArticle: newArticle },
       } = await editArticle({
         variables: {
           id: articleId,
           title: formData.title,
-          image: data.getArticle.image,
+          image: imageURL,
           body: formData.content,
           user_id: user_id,
         },
       });
       console.log(newArticle);
+      toast.success("Article was edited! 🚀🔥", {
+        id: notification,
+      });
+      navigate("/");
+    } else if (imageState === false) {
+      const {
+        data: { editArticle: newArticle },
+      } = await editArticle({
+        variables: {
+          id: articleId,
+          title: formData.title,
+          image: "",
+          body: formData.content,
+          user_id: user_id,
+        },
+      });
+      console.log(newArticle);
+      toast.success("Article was edited! 🚀🔥", {
+        id: notification,
+      });
+      navigate("/");
+    } else {
+      if (formData.image === undefined) {
+        const {
+          data: { editArticle: newArticle },
+        } = await editArticle({
+          variables: {
+            id: articleId,
+            title: formData.title,
+            image: data.getArticle.image,
+            body: formData.content,
+            user_id: user_id,
+          },
+        });
+        toast.success("Article was edited! 🚀🔥", {
+          id: notification,
+        });
+        console.log(newArticle);
+        navigate("/");
+      }
     }
   });
 
@@ -115,7 +131,7 @@ function EditArticle() {
             src={data.getArticle.image}
             alt={data.getArticle.title}
           />
-          {/* <input
+          <input
             className={
               imageState === true
                 ? "border-none text-slate-500 rounded-md outline-none"
@@ -124,18 +140,21 @@ function EditArticle() {
             type="file"
             id="img"
             ref={imageInputRef}
-          /> */}
+          />
           <div className="flex space-x-2 mt-5">
-            {/* <button
-              onClick={() => handleUploadNewButton}
-              className="text-blue-500"
+            <p
+              onClick={() => handleButton(true)}
+              className="text-blue-500 cursor-pointer"
             >
               Upload new
-            </button>
+            </p>
             <hr className="border border-gray-300 h-5" />
-            <button onClick={() => handleDeleteButton} className="text-red-500">
+            <p
+              onClick={() => handleButton(false)}
+              className="text-red-500 cursor-pointer"
+            >
               Delete
-            </button> */}
+            </p>
           </div>
         </div>
         <div className="flex flex-col mt-5 ml-5 space-y-2 ">
@@ -149,11 +168,6 @@ function EditArticle() {
             id="content"
             defaultValue={data.getArticle.body}
           ></textarea>
-          {/* <MDEditor
-            value={(value = data.getArticle.body)}
-            onChange={(val) => setValue(val!)}
-            id="editor"
-          /> */}
         </div>
       </form>
     );

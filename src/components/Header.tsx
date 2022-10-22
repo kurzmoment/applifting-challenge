@@ -10,7 +10,7 @@ function Header() {
     await Userfront.logout({ redirect: "/" }).catch((error) => {
       console.log(error);
     });
-    localStorage.setItem("jwt", "");
+    // localStorage.setItem("jwt", "");
     window.location.reload();
   }
 
@@ -30,7 +30,6 @@ function Header() {
           >
             Recent Articles
           </Link>
-          {/* <li className="text-gray-400">About</li> */}
           <li className="text-black">{Userfront.user.name}</li>
         </ul>
       </div>
