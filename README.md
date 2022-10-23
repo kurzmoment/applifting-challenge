@@ -24,7 +24,7 @@ The app is using Stepzen for creating API routes from Supabase. For querrying an
 Connection with Userfront:
 
 ```typescript
-Userfront.init((your - apikey) as string);
+Userfront.init(yourapikey as string);
 ```
 
 Type reference:
