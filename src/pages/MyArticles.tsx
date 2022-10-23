@@ -1,13 +1,29 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
-import { GET_ARTICLES_BY_USER_ID } from "../graphql/queries";
+import { GET_ARTICLES_BY_USER_ID, GET_ARTICLE_BY_ID } from "../graphql/queries";
 import { Jelly } from "@uiball/loaders";
 import Userfront from "@userfront/core";
 import { Link } from "react-router-dom";
 import { getUserId } from "../helpers/getUserId";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  DELETE_COMMENT_BY_ARTICLE_ID,
+  DELETE_VOTE_BY_ARTICLE_ID,
+  REMOVE_ARTICLE,
+} from "../graphql/mutations";
 
 function MyArticles() {
   const [id, setId] = useState<number>();
+  const [removeArticle] = useMutation(REMOVE_ARTICLE, {
+    refetchQueries: [GET_ARTICLE_BY_ID, "getArticle"],
+  });
+  const [deleteVote] = useMutation(DELETE_VOTE_BY_ARTICLE_ID, {
+    refetchQueries: [GET_ARTICLE_BY_ID, "getArticle"],
+  });
+
+  const [deleteComment] = useMutation(DELETE_COMMENT_BY_ARTICLE_ID, {
+    refetchQueries: [GET_ARTICLE_BY_ID, "getArticle"],
+  });
   useEffect(() => {
     async function userId() {
       const user_id = await getUserId(Userfront.user.email);
@@ -22,6 +38,41 @@ function MyArticles() {
     },
   });
 
+  async function handleRemoveArticle(article_id: number) {
+    console.log(article_id);
+
+    try {
+      const {
+        data: { deleteVote: deletedVote },
+      } = await deleteVote({
+        variables: {
+          article_id: article_id,
+        },
+      });
+      console.log(deletedVote);
+
+      const {
+        data: { deleteComment: deletedComment },
+      } = await deleteComment({
+        variables: {
+          article_id: article_id,
+        },
+      });
+      console.log(deletedComment);
+
+      const {
+        data: { deleteVote: deleteArticle },
+      } = await removeArticle({
+        variables: {
+          id: article_id,
+        },
+      });
+      console.log(deleteArticle);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex flex-1 text-3xl items-center justify-center m-8">
@@ -32,8 +83,17 @@ function MyArticles() {
   if (data) {
     return (
       <div className="mt-10 sm:ml-72 sm:mr-72 overflow-x-auto relative shadow-md sm:rounded-lg">
-        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <div className="flex space-x-4 mb-4 items-center">
+          <h1 className="font-semibold text-4xl ">My Articles</h1>
+          <Link
+            to={"/create-article"}
+            className="bg-blue-500 p-2 text-white rounded-lg"
+          >
+            Create new article
+          </Link>
+        </div>
+        <table className="w-full text-sm text-left text-gray-500 ">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
               <th scope="col" className="py-3 px-6">
                 Article Title
@@ -70,20 +130,20 @@ function MyArticles() {
                 <td className="py-4 px-6">{article.user.name}</td>
                 <td className="py-4 px-6">{article.commentList.length}</td>
                 <td className="py-4 px-6">
-                  <div className="space-x-2 ">
+                  <div className="space-x-4 flex items-center ">
                     <Link
-                      className="font-medium text-blue-600  hover:underline"
+                      className="font-medium hover:underline"
                       to={`edit-article/${article.id}`}
                     >
-                      Edit
+                      <PencilIcon width={20} height={20} />
                     </Link>
 
-                    <a
-                      href="/"
-                      className="font-medium text-blue-600  hover:underline"
-                    >
-                      Remove
-                    </a>
+                    <TrashIcon
+                      onClick={() => handleRemoveArticle(article.id)}
+                      className="cursor-pointer"
+                      width={20}
+                      height={20}
+                    />
                   </div>
                 </td>
               </tr>

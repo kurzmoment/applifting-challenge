@@ -205,15 +205,14 @@ type Mutation {
       dml: INSERT
       configuration: "postgresql_config"
     )
-  deleteComment(id: ID!): Comment
+  deleteCommentByArticleId(article_id: ID!): Comment
     @dbquery(
       type: "postgresql"
-      schema: "public"
-      table: "comment"
-      dml: DELETE
+      query: """
+      delete from "comment" where "article_id"=$1
+      """
       configuration: "postgresql_config"
     )
-  # created_at: DateTime!,
   insertUser(email: String!, name: String!): User
     @dbquery(
       type: "postgresql"
@@ -222,15 +221,12 @@ type Mutation {
       dml: INSERT
       configuration: "postgresql_config"
     )
-  deleteUser(id: ID!): User
-    @dbquery(
-      type: "postgresql"
-      schema: "public"
-      table: "user"
-      dml: DELETE
-      configuration: "postgresql_config"
-    )
-  insertVote(upvote: Int!, user_id: ID!, comment_id: ID!): Vote
+  insertVote(
+    upvote: Int!
+    user_id: ID!
+    comment_id: ID!
+    article_id: ID!
+  ): Vote
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -238,7 +234,7 @@ type Mutation {
       dml: INSERT
       configuration: "postgresql_config"
     )
-  editVote(upvote: Int!, user_id: ID!, comment_id: ID!): Vote
+  editVote(upvote: Int!, user_id: ID!, comment_id: ID!, article_id: ID!): Vote
     @dbquery(
       type: "postgresql"
       schema: "public"
@@ -255,6 +251,14 @@ type Mutation {
       dml: DELETE
       configuration: "postgresql_config"
     )
+  deleteVoteByArticleId(article_id: ID!): Comment
+    @dbquery(
+      type: "postgresql"
+      query: """
+      delete from "vote" where "article_id"=$1
+      """
+      configuration: "postgresql_config"
+    )
   editArticle(
     title: String!
     image: String!
@@ -265,7 +269,6 @@ type Mutation {
     @dbquery(
       type: "postgresql"
       schema: "public"
-      # table: "article"
       query: """
       UPDATE article SET "title"=$1, "image"=$2, "body"=$3 WHERE "id"=$4 and "user_id"=$5
       """

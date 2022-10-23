@@ -46,8 +46,18 @@ export const INSERT_COMMENT = gql`
 `;
 
 export const INSERT_VOTE = gql`
-  mutation MyQuery($comment_id: ID!, $upvote: Int!, $user_id: ID!) {
-    insertVote(comment_id: $comment_id, upvote: $upvote, user_id: $user_id) {
+  mutation MyQuery(
+    $comment_id: ID!
+    $upvote: Int!
+    $user_id: ID!
+    $article_id: ID!
+  ) {
+    insertVote(
+      comment_id: $comment_id
+      upvote: $upvote
+      user_id: $user_id
+      article_id: $article_id
+    ) {
       id
       comment_id
       upvote
@@ -57,8 +67,18 @@ export const INSERT_VOTE = gql`
 `;
 
 export const EDIT_VOTE = gql`
-  mutation MyQuery($comment_id: ID!, $upvote: Int!, $user_id: ID!) {
-    editVote(comment_id: $comment_id, upvote: $upvote, user_id: $user_id) {
+  mutation MyQuery(
+    $comment_id: ID!
+    $upvote: Int!
+    $user_id: ID!
+    $article_id: ID!
+  ) {
+    editVote(
+      comment_id: $comment_id
+      upvote: $upvote
+      user_id: $user_id
+      article_id: $article_id
+    ) {
       id
       comment_id
       user_id
@@ -97,6 +117,32 @@ export const DELETE_VOTE = gql`
       comment_id
       upvote
       user_id
+    }
+  }
+`;
+
+export const REMOVE_ARTICLE = gql`
+  mutation MyQuery($id: ID!) {
+    deleteArticle(id: $id) {
+      body
+      id
+      user_id
+    }
+  }
+`;
+
+export const DELETE_COMMENT_BY_ARTICLE_ID = gql`
+  mutation MyQuery($article_id: ID!) {
+    deleteCommentByArticleId(article_id: $article_id) {
+      id
+    }
+  }
+`;
+
+export const DELETE_VOTE_BY_ARTICLE_ID = gql`
+  mutation MyQuery($article_id: ID!) {
+    deleteVoteByArticleId(article_id: $article_id) {
+      id
     }
   }
 `;

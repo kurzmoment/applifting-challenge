@@ -26,6 +26,7 @@ function CommentSection({ comment, data }: Props) {
   const [deleteVote] = useMutation(DELETE_VOTE, {
     refetchQueries: [GET_ARTICLE_BY_ID, "getArticle"],
   });
+  console.log(data);
 
   function displayVotes(comment: CommentType) {
     const votes: Vote[] = comment?.voteList;
@@ -48,19 +49,6 @@ function CommentSection({ comment, data }: Props) {
 
     setVote([isUpvote, comment_id]);
     const user_id = await getUserId(Userfront.user.email);
-    // const {
-    //   data: { getUserList },
-    // } = await client.query({
-    //   query: GET_USERS,
-    // });
-    // var user_id: number = 0;
-    // getUserList.map((u: User) => {
-    //   if (u.email === Userfront.user.email) {
-    //     user_id = u.id;
-    //   }
-    //   return user_id;
-    // });
-
     data.getArticle.commentList.map(async (comment: CommentType) => {
       if (comment.id === comment_id) {
         if (comment.voteList[0]?.user.id === user_id) {
@@ -82,6 +70,7 @@ function CommentSection({ comment, data }: Props) {
                 comment_id: vote?.[1],
                 upvote: vote?.[0],
                 user_id: user_id,
+                article_id: data.getArticle.id,
               },
             });
             console.log(newVote);
@@ -94,6 +83,7 @@ function CommentSection({ comment, data }: Props) {
               comment_id: vote?.[1],
               upvote: vote?.[0],
               user_id: user_id,
+              article_id: data.getArticle.id,
             },
           });
           console.log(newVote);
