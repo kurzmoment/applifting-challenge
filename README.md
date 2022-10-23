@@ -1,46 +1,543 @@
-# Getting Started with Create React App
+## Applifting Challenge
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Used Technology
 
-## Available Scripts
+- React
+- Typescript
+- React Router
+- GraphQL
+- Stepzen
+- Cloudinary
+- Userfront
+- TailwindCSS
+- Supabase
+- Apollo Client
 
-In the project directory, you can run:
+---
 
-### `npm start`
+#### API
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The app is using Stepzen for creating API routes from Supabase. For querrying and displaying data is used GraphQL with Appolo Client. For user authentication it is using Userfront.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+##### Authetication
 
-### `npm test`
+Connection with Userfront:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```typescript
+Userfront.init(process.env.REACT_APP_USERFRONT_KEY as string);
+```
 
-### `npm run build`
+Type reference:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```typescript
+type FormData = {
+  name: string;
+  email: string;
+  password: string;
+};
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Signing user to page with Userfront:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```typescript
+await Userfront.signup({
+  method: "password",
+  name: formData.name,
+  email: formData.email,
+  password: formData.password,
+  redirect: "/",
+});
+```
 
-### `npm run eject`
+#### API ROUTES
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Conection is created in appolo-client.js file.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```js
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+const client = new ApolloClient({
+  uri: "https://camden.stepzen.net/api/cranky-manta/__graphql",
+  cache: new InMemoryCache(),
+  headers: {
+    Authorization: `Apikey ${process.env.REACT_APP_STEPZEN_KEY}`,
+  },
+});
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+export default client;
+```
 
-## Learn More
+##### `POST` ADD USER
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```graphql
+insertUser(email:  String!, name:  String!): User
+@dbquery(
+	type:  "postgresql"
+	schema:  "public"
+	table:  "user"
+	dml:  INSERT
+	configuration:  "postgresql_config"
+)
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```typescript
+import { gql } from "@apollo/client";
+
+export const ADD_USER = gql`
+  mutation MyQuery($email: String!, $name: String!) {
+    insertUser(email: $email, name: $name) {
+      name
+      id
+      email
+      created_at
+    }
+  }
+`;
+```
+
+##### `POST` ADD ARTICLE
+
+```graphql
+insertArticle(
+	image:  String!
+	body:  String!
+	title:  String!
+	user_id:  ID!
+): Article
+	@dbquery(
+		type:  "postgresql"
+		schema:  "public"
+		table:  "article"
+		dml:  INSERT
+		configuration:  "postgresql_config"
+)
+```
+
+```ts
+export const ADD_ARTICLE = gql`
+  mutation MyQuery(
+    $image: String!
+    $body: String!
+    $title: String!
+    $user_id: ID!
+  ) {
+    insertArticle(
+      image: $image
+      body: $body
+      title: $title
+      user_id: $user_id
+    ) {
+      image
+      body
+      created_at
+      title
+      user_id
+    }
+  }
+`;
+```
+
+##### `POST` ADD COMMENT
+
+```graphql
+insertComment(user_id:  ID!, text:  String!, article_id:  ID!): Comment
+	@dbquery(
+		type:  "postgresql"
+		schema:  "public"
+		table:  "comment"
+		dml:  INSERT
+		configuration:  "postgresql_config"
+)
+```
+
+```typescript
+export const INSERT_COMMENT = gql`
+  mutation MyQuery($article_id: ID!, $text: String!, $user_id: ID!) {
+    insertComment(article_id: $article_id, text: $text, user_id: $user_id) {
+      id
+      text
+      article_id
+      created_at
+      user_id
+    }
+  }
+`;
+```
+
+##### `POST` ADD VOTE
+
+```graphql
+insertVote(
+	upvote:  Int!
+	user_id:  ID!
+	comment_id:  ID!
+	article_id:  ID!
+): Vote
+	@dbquery(
+		type:  "postgresql"
+		schema:  "public"
+		table:  "vote"
+		dml:  INSERT
+		configuration:  "postgresql_config"
+)
+```
+
+```typescript
+export const INSERT_VOTE = gql`
+  mutation MyQuery(
+    $comment_id: ID!
+    $upvote: Int!
+    $user_id: ID!
+    $article_id: ID!
+  ) {
+    insertVote(
+      comment_id: $comment_id
+      upvote: $upvote
+      user_id: $user_id
+      article_id: $article_id
+    ) {
+      id
+      comment_id
+      upvote
+      user_id
+    }
+  }
+`;
+```
+
+##### `GET` GET USERS
+
+```graphql
+getUser(id:  ID!): User
+	@dbquery(
+		type:  "postgresql"
+		schema:  "public"
+		table:  "user"
+		configuration:  "postgresql_config"
+)
+```
+
+```ts
+export const GET_USERS = gql`
+  query MyQuery {
+    getUserList {
+      email
+      id
+    }
+  }
+`;
+```
+
+##### `GET` GET ARTICLES
+
+```graphql
+getArticleList: [Article]
+	@dbquery(
+		type:  "postgresql"
+		schema:  "public"
+		table:  "article"
+		configuration:  "postgresql_config"
+)
+```
+
+```ts
+export const GET_ARTICLES = gql`
+  query MyQuery {
+    getArticleList {
+      body
+      created_at
+      id
+      image
+      title
+      user {
+        name
+      }
+      commentList {
+        id
+        article_id
+        voteList {
+          user_id
+          upvote
+          comment_id
+        }
+      }
+    }
+  }
+`;
+```
+
+##### `GET` GET ARTICLES BY USER ID
+
+```graphql
+getArticleUsingUser_id(id:  ID!): [Article]
+	@dbquery(
+		type:  "postgresql"
+		query:  """
+		SELECT T."body", T."created_at", T."id", T."image", T."title", T."user_id"
+		FROM "public"."article" T
+		WHERE T."user_id" = $1
+		"""
+		configuration:  "postgresql_config"
+)
+```
+
+```ts
+export const GET_ARTICLES_BY_USER_ID = gql`
+  query MyQuery($id: ID!) {
+    getArticleUsingUser_id(id: $id) {
+      body
+      created_at
+      id
+      image
+      title
+      user {
+        created_at
+        email
+        id
+        name
+      }
+      commentList {
+        article_id
+        created_at
+        id
+        text
+        voteList {
+          comment_id
+          created_at
+          id
+          upvote
+        }
+      }
+    }
+  }
+`;
+```
+
+##### `GET` GET ARTICLES BY ID
+
+```graphql
+getArticle(id:  ID!): Article
+	@dbquery(
+		type:  "postgresql"
+		schema:  "public"
+		table:  "article"
+		configuration:  "postgresql_config"
+)
+```
+
+```ts
+export const GET_ARTICLE_BY_ID = gql`
+  query MyQuery($id: ID!) {
+    getArticle(id: $id) {
+      body
+      created_at
+      id
+      image
+      title
+      user {
+        name
+        id
+      }
+      commentList {
+        created_at
+        id
+        text
+        user {
+          name
+          id
+          email
+        }
+        voteList {
+          comment_id
+          created_at
+          id
+          upvote
+          user {
+            email
+            id
+          }
+        }
+      }
+    }
+  }
+`;
+```
+
+##### `PATCH` EDIT VOTE
+
+```graphql
+editVote(upvote:  Int!, user_id:  ID!, comment_id:  ID!, article_id:  ID!): Vote
+	@dbquery(
+		type:  "postgresql"
+		schema:  "public"
+		query:  """
+		update vote set "upvote"=+$1 where "user_id"=$2 and "comment_id"=$3
+		"""
+		configuration:  "postgresql_config"
+	)
+```
+
+```ts
+export const EDIT_VOTE = gql`
+  mutation MyQuery(
+    $comment_id: ID!
+    $upvote: Int!
+    $user_id: ID!
+    $article_id: ID!
+  ) {
+    editVote(
+      comment_id: $comment_id
+      upvote: $upvote
+      user_id: $user_id
+      article_id: $article_id
+    ) {
+      id
+      comment_id
+      user_id
+      upvote
+    }
+  }
+`;
+```
+
+##### `PATCH` EDIT ARTICLE
+
+```graphql
+editArticle(
+	title:  String!
+	image:  String!
+	body:  String!
+	id:  ID!
+	user_id:  ID!
+): Article
+	@dbquery(
+		type:  "postgresql"
+		schema:  "public"
+		query:  """
+		UPDATE article SET "title"=$1, "image"=$2, "body"=$3 WHERE "id"=$4 and "user_id"=$5
+		"""
+		configuration:  "postgresql_config"
+	)
+```
+
+```ts
+export const EDIT_ARTICLE = gql`
+  mutation MyQuery(
+    $id: ID!
+    $body: String!
+    $image: String!
+    $title: String!
+    $user_id: ID!
+  ) {
+    editArticle(
+      id: $id
+      body: $body
+      image: $image
+      title: $title
+      user_id: $user_id
+    ) {
+      body
+      id
+      image
+      title
+      user_id
+    }
+  }
+`;
+```
+
+##### `DELETE` DELETE VOTE
+
+```graphql
+deleteVote(id:  ID!): Vote
+	@dbquery(
+		type:  "postgresql"
+		schema:  "public"
+		table:  "vote"
+		dml:  DELETE
+		configuration:  "postgresql_config"
+	)
+```
+
+```ts
+export const DELETE_VOTE = gql`
+  mutation MyQuery($id: ID!) {
+    deleteVote(id: $id) {
+      comment_id
+      upvote
+      user_id
+    }
+  }
+`;
+```
+
+##### `DELETE` REMOVE ARTICLE
+
+```graphql
+deleteArticle(id:  ID!): Article
+	@dbquery(
+		type:  "postgresql"
+		schema:  "public"
+		table:  "article"
+		dml:  DELETE
+		configuration:  "postgresql_config"
+	)
+```
+
+```ts
+export const REMOVE_ARTICLE = gql`
+  mutation MyQuery($id: ID!) {
+    deleteArticle(id: $id) {
+      body
+      id
+      user_id
+    }
+  }
+`;
+```
+
+##### `DELETE` DELETE COMMENT BY ARTICLE ID
+
+```graphql
+deleteCommentByArticleId(article_id:  ID!): Comment
+	@dbquery(
+		type:  "postgresql"
+		query:  """
+		delete from "comment" where "article_id"=$1
+		"""
+		configuration:  "postgresql_config"
+	)
+```
+
+```ts
+export const DELETE_COMMENT_BY_ARTICLE_ID = gql`
+  mutation MyQuery($article_id: ID!) {
+    deleteCommentByArticleId(article_id: $article_id) {
+      id
+    }
+  }
+`;
+```
+
+##### `DELETE` DELETE VOTE BY ARTICLE ID
+
+```graphql
+deleteVoteByArticleId(article_id:  ID!): Comment
+	@dbquery(
+		type:  "postgresql"
+		query:  """
+		delete from "vote" where "article_id"=$1
+		"""
+		configuration:  "postgresql_config"
+	)
+```
+
+```ts
+export const DELETE_VOTE_BY_ARTICLE_ID = gql`
+  mutation MyQuery($article_id: ID!) {
+    deleteVoteByArticleId(article_id: $article_id) {
+      id
+    }
+  }
+`;
+```
