@@ -17,7 +17,7 @@
 
 #### API
 
-The app is using Stepzen for creating API routes from Supabase. For querrying and displaying data is used GraphQL with Appolo Client. For user authentication it is using Userfront.
+The app is using Stepzen for creating API routes from Supabase. For querrying and displaying data is used GraphQL with Apollo Client. For user authentication it is using Userfront.
 
 ##### Authetication
 
