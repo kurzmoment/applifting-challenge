@@ -24,7 +24,7 @@ The app is using Stepzen for creating API routes from Supabase. For querrying an
 Connection with Userfront:
 
 ```typescript
-Userfront.init(process.env.REACT_APP_USERFRONT_KEY as string);
+Userfront.init((your - apikey) as string);
 ```
 
 Type reference:
@@ -60,7 +60,7 @@ const client = new ApolloClient({
   uri: "https://camden.stepzen.net/api/cranky-manta/__graphql",
   cache: new InMemoryCache(),
   headers: {
-    Authorization: `Apikey ${process.env.REACT_APP_STEPZEN_KEY}`,
+    Authorization: `Apikey ${your - api - key}`,
   },
 });
 
