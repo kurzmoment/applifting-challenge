@@ -541,3 +541,19 @@ export const DELETE_VOTE_BY_ARTICLE_ID = gql`
   }
 `;
 ```
+
+##### UPLOADING IMAGES
+
+The app is using cloudinary cloud for storing images.
+
+#### `POST "https://api.cloudinary.com/v1_1/di8ushvnv/image/upload"`
+
+```ts
+const imageData = await fetch(
+  "https://api.cloudinary.com/v1_1/di8ushvnv/image/upload",
+  {
+    method: "POST",
+    body: data,
+  }
+).then((r) => r.json());
+```
