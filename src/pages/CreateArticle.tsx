@@ -5,7 +5,7 @@ import { useMutation } from "@apollo/client";
 import { ADD_ARTICLE } from "../graphql/mutations";
 import Userfront from "@userfront/core";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { getUserId } from "../helpers/getUserId";
 import { getImagePath } from "../helpers/getImagePath";
 
@@ -54,6 +54,9 @@ function CreateArticle() {
       console.log(error);
     }
   });
+  if (Userfront.user.email === undefined) {
+    return <Navigate to={"/login"} />;
+  }
 
   return (
     <form className="sm:w-1/2 sm:ml-72 sm:mr-0 mr-4 mb-8" onSubmit={onSubmit}>

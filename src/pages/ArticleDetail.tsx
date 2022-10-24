@@ -58,7 +58,7 @@ function ArticleDetail() {
             ))}
           </div>
         </div>
-        <hr className="border border-gray-200 h-96 m-5 mt-8" />
+        <hr className="border border-gray-200 h-96 m-5 mt-8 hidden sm:flex" />
         <div className="flex-1 mt-8">
           <RelatedArticles />
         </div>

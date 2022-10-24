@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { GET_ARTICLES_BY_USER_ID, GET_ARTICLE_BY_ID } from "../graphql/queries";
 import { Jelly } from "@uiball/loaders";
 import Userfront from "@userfront/core";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { getUserId } from "../helpers/getUserId";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import {
@@ -37,6 +37,9 @@ function MyArticles() {
       id: id,
     },
   });
+  if (Userfront.user.email === undefined) {
+    return <Navigate to={"/login"} />;
+  }
 
   async function handleRemoveArticle(article_id: number) {
     console.log(article_id);
@@ -83,8 +86,8 @@ function MyArticles() {
   if (data) {
     return (
       <div className="mt-10 sm:ml-72 sm:mr-72 overflow-x-auto relative shadow-md sm:rounded-lg">
-        <div className="flex space-x-4 mb-4 items-center">
-          <h1 className="font-semibold text-4xl ">My Articles</h1>
+        <div className="flex space-x-4 mb-4 items-center sm:m-4 m-2">
+          <h1 className="font-semibold sm:text-4xl text-3xl">My Articles</h1>
           <Link
             to={"/create-article"}
             className="bg-blue-500 p-2 text-white rounded-lg"

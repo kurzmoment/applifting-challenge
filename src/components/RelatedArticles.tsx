@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { GET_ARTICLES } from "../graphql/queries";
 
 function RelatedArticles() {
-  // TODO: MAX 4 CLANKY
   const { data, loading } = useQuery(GET_ARTICLES, {});
 
   if (loading) {
@@ -12,7 +11,7 @@ function RelatedArticles() {
   }
   if (data) {
     return (
-      <div>
+      <div className="sm:ml-0 ml-6 mb-4">
         <h3 className="text-xl font-semibold">Related Articles</h3>
         <div>
           {data.getArticleList.map((article: ArticleTypes) => (

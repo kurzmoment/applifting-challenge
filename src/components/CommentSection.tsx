@@ -7,6 +7,7 @@ import { GET_ARTICLE_BY_ID } from "../graphql/queries";
 import Userfront from "@userfront/core";
 import Avatar from "./Avatar";
 import { getUserId } from "../helpers/getUserId";
+import toast from "react-hot-toast";
 
 type Props = {
   comment: CommentType;
@@ -42,30 +43,42 @@ function CommentSection({ comment, data }: Props) {
     return displayNumber;
   }
   async function upVote(isUpvote: number, comment_id: number) {
-    console.log(isUpvote, comment_id);
-    if (!Userfront.user) {
+    if (Userfront.user.email === undefined) {
+      const notification = toast.error("You'll need to sign in to Vote!");
       console.log("You'll need to sign in to Vote!");
-    }
-
-    setVote([isUpvote, comment_id]);
-    const user_id = await getUserId(Userfront.user.email);
-    data.getArticle.commentList.map(async (comment: CommentType) => {
-      if (comment.id === comment_id) {
-        if (comment.voteList[0]?.user.id === user_id) {
-          if (comment.voteList[0].upvote === isUpvote) {
-            console.log("You already made this decision");
-            const {
-              data: { deleteVote: deletedVote },
-            } = await deleteVote({
-              variables: {
-                id: comment.voteList[0].id,
-              },
-            });
-            console.log(deletedVote);
+    } else {
+      setVote([isUpvote, comment_id]);
+      const user_id = await getUserId(Userfront.user.email);
+      data.getArticle.commentList.map(async (comment: CommentType) => {
+        if (comment.id === comment_id) {
+          if (comment.voteList[0]?.user.id === user_id) {
+            if (comment.voteList[0].upvote === isUpvote) {
+              console.log("You already made this decision");
+              const {
+                data: { deleteVote: deletedVote },
+              } = await deleteVote({
+                variables: {
+                  id: comment.voteList[0].id,
+                },
+              });
+              console.log(deletedVote);
+            } else {
+              const {
+                data: { editVote: newVote },
+              } = await editVote({
+                variables: {
+                  comment_id: vote?.[1],
+                  upvote: vote?.[0],
+                  user_id: user_id,
+                  article_id: data.getArticle.id,
+                },
+              });
+              console.log(newVote);
+            }
           } else {
             const {
-              data: { editVote: newVote },
-            } = await editVote({
+              data: { insertVote: newVote },
+            } = await insertVote({
               variables: {
                 comment_id: vote?.[1],
                 upvote: vote?.[0],
@@ -75,21 +88,9 @@ function CommentSection({ comment, data }: Props) {
             });
             console.log(newVote);
           }
-        } else {
-          const {
-            data: { insertVote: newVote },
-          } = await insertVote({
-            variables: {
-              comment_id: vote?.[1],
-              upvote: vote?.[0],
-              user_id: user_id,
-              article_id: data.getArticle.id,
-            },
-          });
-          console.log(newVote);
         }
-      }
-    });
+      });
+    }
   }
 
   return (

@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { Jelly } from "@uiball/loaders";
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { EDIT_ARTICLE } from "../graphql/mutations";
 import { GET_ARTICLE_BY_ID } from "../graphql/queries";
 import Userfront from "@userfront/core";
@@ -92,6 +92,9 @@ function EditArticle() {
       }
     }
   });
+  if (Userfront.user.email === undefined) {
+    return <Navigate to={"/login"} />;
+  }
 
   if (loading) {
     return (

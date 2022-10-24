@@ -40,10 +40,15 @@ function AddComment() {
       <div className="flex space-x-4  sm:mr-10">
         <Avatar seed={Userfront.user.email} />
         <input
+          disabled={Userfront.user.email === undefined}
           {...register("content", { required: true })}
           className="outline-none border border-gray-300 flex-1 p-1 pl-2 rounded-sm"
           type="text"
-          placeholder="Join the discussion"
+          placeholder={
+            Userfront.user.email === undefined
+              ? "Sign in to join the discussion"
+              : "Join the discussion"
+          }
         />
       </div>
       {!!watch("content") && (
