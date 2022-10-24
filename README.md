@@ -15,6 +15,12 @@
 
 ---
 
+### LIVE DEMO
+
+Live demo is deployed with Vercel!
+
+[Applifting-challenge.vercel.com](https://applifting-challenge.vercel.app/)
+
 #### API
 
 The app is using Stepzen for creating API routes from Supabase. For querrying and displaying data is used GraphQL with Apollo Client. For user authentication it is using Userfront.

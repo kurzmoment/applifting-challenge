@@ -42,8 +42,6 @@ function MyArticles() {
   }
 
   async function handleRemoveArticle(article_id: number) {
-    console.log(article_id);
-
     try {
       const {
         data: { deleteVote: deletedVote },

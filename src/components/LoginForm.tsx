@@ -15,7 +15,6 @@ function LoginForm() {
   const { register, handleSubmit } = useForm<FormData>();
 
   const onSubmit = handleSubmit(async (formData) => {
-    console.log(formData);
     const notification = toast.loading("Login in!");
 
     try {
@@ -30,13 +29,8 @@ function LoginForm() {
           id: notification,
         });
       });
-      // setValue("email", "");
-      // setValue("password", "");
-      // localStorage.setItem("jwt", Userfront.tokens.idToken);
       console.log(res);
     } catch (error) {
-      // setValue("email", formData.email);
-      // setValue("password", formData.password);
       console.log(error);
     }
   });

@@ -6,12 +6,10 @@ Userfront.init(process.env.REACT_APP_USERFRONT_KEY as string);
 
 function Header() {
   const location = useLocation();
-  console.log(location.pathname);
   async function handleLogOut() {
     await Userfront.logout({ redirect: "/" }).catch((error) => {
       console.log(error);
     });
-    // localStorage.setItem("jwt", "");
     window.location.reload();
   }
 

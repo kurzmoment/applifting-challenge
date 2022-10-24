@@ -61,7 +61,6 @@ function RegisterForm() {
             });
           }
         });
-      // localStorage.setItem("jwt", Userfront.tokens.idToken);
     } catch (error) {
       console.log(error);
     }

@@ -27,7 +27,6 @@ function CommentSection({ comment, data }: Props) {
   const [deleteVote] = useMutation(DELETE_VOTE, {
     refetchQueries: [GET_ARTICLE_BY_ID, "getArticle"],
   });
-  console.log(data);
 
   function displayVotes(comment: CommentType) {
     const votes: Vote[] = comment?.voteList;
@@ -45,7 +44,6 @@ function CommentSection({ comment, data }: Props) {
   async function upVote(isUpvote: number, comment_id: number) {
     if (Userfront.user.email === undefined) {
       const notification = toast.error("You'll need to sign in to Vote!");
-      console.log("You'll need to sign in to Vote!");
     } else {
       setVote([isUpvote, comment_id]);
       const user_id = await getUserId(Userfront.user.email);
@@ -118,7 +116,7 @@ function CommentSection({ comment, data }: Props) {
             onClick={() => upVote(1, comment.id)}
             width={20}
             height={20}
-            color="black"
+            color={"black"}
             className="cursor-pointer hover:bg-gray-300 m-1"
           />
           <hr className="border border-gray-200 h-5" />
@@ -126,7 +124,7 @@ function CommentSection({ comment, data }: Props) {
             onClick={() => upVote(-1, comment.id)}
             width={20}
             height={20}
-            color="black"
+            color={"black"}
             className="cursor-pointer hover:bg-gray-300 m-1"
           />
           <hr className="border border-gray-200 h-5 " />
