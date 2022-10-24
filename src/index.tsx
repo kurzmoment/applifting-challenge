@@ -22,54 +22,17 @@ root.render(
     <ApolloProvider client={client}>
       <BrowserRouter>
         <Toaster />
+        <Header />
         <Routes>
-          <Route
-            index
-            path="/"
-            element={
-              <div>
-                <Header />
-                <App />
-              </div>
-            }
-          />
+          <Route index path="/" element={<App />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
-          <Route
-            path="create-article"
-            element={
-              <div>
-                <Header />
-                <CreateArticle />
-              </div>
-            }
-          />
-          <Route
-            path="my-articles"
-            element={
-              <div>
-                <Header />
-                <MyArticles />
-              </div>
-            }
-          />
-          <Route
-            path="/article-detail/:id"
-            element={
-              <div>
-                <Header />
-                <ArticleDetail />
-              </div>
-            }
-          />
+          <Route path="create-article" element={<CreateArticle />} />
+          <Route path="my-articles" element={<MyArticles />} />
+          <Route path="/article-detail/:id" element={<ArticleDetail />} />
           <Route
             path="my-articles/edit-article/:id"
-            element={
-              <div>
-                <Header />
-                <EditArticle />
-              </div>
-            }
+            element={<EditArticle />}
           />
         </Routes>
       </BrowserRouter>
