@@ -19,7 +19,11 @@
 
 Live demo is deployed with Vercel!
 
-[Applifting-challenge.vercel.com](https://applifting-challenge.vercel.app/)
+If one of them is loading slowly, try next URL.
+
+[applifting-challenge.vercel.app](https://applifting-challenge.vercel.app/)
+[applifting-challenge-kurzmoment.vercel.app](applifting-challenge-kurzmoment.vercel.app/)
+[applifting-challenge-git-master-kurzmoment.vercel.app](applifting-challenge-git-master-kurzmoment.vercel.app)
 
 #### API
 
