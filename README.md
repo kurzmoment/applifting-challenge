@@ -558,11 +558,11 @@ export const DELETE_VOTE_BY_ARTICLE_ID = gql`
 
 The app is using cloudinary cloud for storing images.
 
-#### `POST "https://api.cloudinary.com/v1_1/di8ushvnv/image/upload"`
+#### `POST "https://api.cloudinary.com/v1_1/yourcloudname/image/upload"`
 
 ```ts
 const imageData = await fetch(
-  "https://api.cloudinary.com/v1_1/di8ushvnv/image/upload",
+  "https://api.cloudinary.com/v1_1/yourcloudname/image/upload",
   {
     method: "POST",
     body: data,
