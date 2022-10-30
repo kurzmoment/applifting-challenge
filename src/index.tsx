@@ -13,6 +13,7 @@ import Header from "./components/Header";
 import MyArticles from "./pages/MyArticles";
 import ArticleDetail from "./pages/ArticleDetail";
 import EditArticle from "./pages/EditArticle";
+import NotFound from "./components/NotFound";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -34,6 +35,7 @@ root.render(
             path="my-articles/edit-article/:id"
             element={<EditArticle />}
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </ApolloProvider>

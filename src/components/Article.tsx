@@ -34,7 +34,7 @@ function Article({ article }: Props) {
           </div>
           <div className="ml-5 mt-3 w-4/5 lg:w-3/5">
             <MDEditor.Markdown
-              source={article.body.slice(0, 450) + "More in detail ..."}
+              source={article.body.slice(0, 450) + " More in detail ..."}
               data-color-mode
             />
           </div>
