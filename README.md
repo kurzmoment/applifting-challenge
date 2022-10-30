@@ -79,7 +79,7 @@ const client = new ApolloClient({
 export default client;
 ```
 
-##### `POST` ADD USER
+##### ADD USER
 
 ```graphql
 insertUser(email:  String!, name:  String!): User
@@ -107,7 +107,7 @@ export const ADD_USER = gql`
 `;
 ```
 
-##### `POST` ADD ARTICLE
+##### ADD ARTICLE
 
 ```graphql
 insertArticle(
@@ -149,7 +149,7 @@ export const ADD_ARTICLE = gql`
 `;
 ```
 
-##### `POST` ADD COMMENT
+##### ADD COMMENT
 
 ```graphql
 insertComment(user_id:  ID!, text:  String!, article_id:  ID!): Comment
@@ -176,7 +176,7 @@ export const INSERT_COMMENT = gql`
 `;
 ```
 
-##### `POST` ADD VOTE
+##### ADD VOTE
 
 ```graphql
 insertVote(
@@ -217,7 +217,7 @@ export const INSERT_VOTE = gql`
 `;
 ```
 
-##### `GET` GET USERS
+##### GET USERS
 
 ```graphql
 getUser(id:  ID!): User
@@ -240,7 +240,7 @@ export const GET_USERS = gql`
 `;
 ```
 
-##### `GET` GET ARTICLES
+##### GET ARTICLES
 
 ```graphql
 getArticleList: [Article]
@@ -278,7 +278,7 @@ export const GET_ARTICLES = gql`
 `;
 ```
 
-##### `GET` GET ARTICLES BY USER ID
+##### GET ARTICLES BY USER ID
 
 ```graphql
 getArticleUsingUser_id(id:  ID!): [Article]
@@ -325,7 +325,7 @@ export const GET_ARTICLES_BY_USER_ID = gql`
 `;
 ```
 
-##### `GET` GET ARTICLES BY ID
+##### GET ARTICLES BY ID
 
 ```graphql
 getArticle(id:  ID!): Article
@@ -375,7 +375,7 @@ export const GET_ARTICLE_BY_ID = gql`
 `;
 ```
 
-##### `PATCH` EDIT VOTE
+##### EDIT VOTE
 
 ```graphql
 editVote(upvote:  Int!, user_id:  ID!, comment_id:  ID!, article_id:  ID!): Vote
@@ -412,7 +412,7 @@ export const EDIT_VOTE = gql`
 `;
 ```
 
-##### `PATCH` EDIT ARTICLE
+##### EDIT ARTICLE
 
 ```graphql
 editArticle(
@@ -458,7 +458,7 @@ export const EDIT_ARTICLE = gql`
 `;
 ```
 
-##### `DELETE` DELETE VOTE
+##### DELETE VOTE
 
 ```graphql
 deleteVote(id:  ID!): Vote
@@ -483,7 +483,7 @@ export const DELETE_VOTE = gql`
 `;
 ```
 
-##### `DELETE` REMOVE ARTICLE
+##### REMOVE ARTICLE
 
 ```graphql
 deleteArticle(id:  ID!): Article
@@ -508,7 +508,7 @@ export const REMOVE_ARTICLE = gql`
 `;
 ```
 
-##### `DELETE` DELETE COMMENT BY ARTICLE ID
+##### DELETE COMMENT BY ARTICLE ID
 
 ```graphql
 deleteCommentByArticleId(article_id:  ID!): Comment
@@ -531,7 +531,7 @@ export const DELETE_COMMENT_BY_ARTICLE_ID = gql`
 `;
 ```
 
-##### `DELETE` DELETE VOTE BY ARTICLE ID
+##### DELETE VOTE BY ARTICLE ID
 
 ```graphql
 deleteVoteByArticleId(article_id:  ID!): Comment
